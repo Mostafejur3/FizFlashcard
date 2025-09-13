@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear All Words</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #e74c3c;
+            margin-bottom: 20px;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #c0392b;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗑️ Clear All Words</h1>
+        
+        <div class="warning">
+            <strong>⚠️ WARNING:</strong> This will permanently delete ALL uploaded words from ALL HSK levels (1-6). This action cannot be undone!
+        </div>
+        
+        <p>Click the button below to clear all words from your flashcard system:</p>
+        
+        <button onclick="clearAllWords()">Clear All Words</button>
+        
+        <div id="success" class="success">
+            ✅ All words have been successfully deleted! You can now close this page and return to your flashcard app.
+        </div>
+        
+        <p style="margin-top: 30px; color: #666; font-size: 14px;">
+            After clearing, all HSK levels will be empty and ready for new CSV uploads.
+        </p>
+    </div>
+
+    <script>
+        function clearAllWords() {
+            const confirmMessage = 'Are you sure you want to delete ALL uploaded words? This will permanently remove all words from all HSK levels and cannot be undone.';
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            try {
+                // Clear all words from localStorage
+                localStorage.setItem('fizflashcard_words', JSON.stringify([]));
+                
+                // Clear HSK levels storage (used by admin panel)
+                const hskLevels = {};
+                for (let i = 1; i <= 6; i++) {
+                    hskLevels[`hsk${i}`] = [];
+                }
+                localStorage.setItem('fizflashcard_hsk_levels', JSON.stringify(hskLevels));
+                
+                // Clear all progress data for all HSK levels and groups
+                for (let i = 1; i <= 6; i++) {
+                    // Clear old HSK-level data
+                    localStorage.removeItem(`fizflashcard_mastered_hsk_${i}`);
+                    localStorage.removeItem(`fizflashcard_review_hsk_${i}`);
+                    localStorage.removeItem(`fizflashcard_bookmarks_hsk_${i}`);
+                    
+                    // Clear group-specific data for each HSK level
+                    const groupRanges = ['1-50', '51-100', '101-150', '1-100', '101-200', '201-300', '301-400', '401-500', '501-600', '1-600', '1-433', '434-866', '867-1300', '867+', '1-1300'];
+                    groupRanges.forEach(range => {
+                        localStorage.removeItem(`fizflashcard_mastered_hsk_${i}_group_${range}`);
+                        localStorage.removeItem(`fizflashcard_review_hsk_${i}_group_${range}`);
+                        localStorage.removeItem(`fizflashcard_bookmarks_hsk_${i}_group_${range}`);
+                    });
+                }
+                
+                // Show success message
+                document.getElementById('success').style.display = 'block';
+                
+                // Also try to refresh the main app if it's open
+                if (window.opener) {
+                    window.opener.location.reload();
+                }
+                
+            } catch (error) {
+                alert('Error clearing words: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
