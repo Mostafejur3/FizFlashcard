@@ -1,17 +1,11 @@
 // Supabase Configuration and Database Connection
 // This file handles all database operations using environment variables
 
-// Hardcoded defaults so the app works on every device without manual setup
-const DEFAULT_SUPABASE_URL = 'https://wxtfesiprvncqyfberkc.supabase.co';
-const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4dGZlc2lwcnZuY3F5ZmJlcmtjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1NjkwNjUsImV4cCI6MjA3MzE0NTA2NX0.vbCR4BZkjWeGwAJM4IGKxWggiEXV8kyNXWl_b5H8vxU';
-// Service role key is not used on the client, but we keep it here only if needed by admin-only flows.
-const DEFAULT_SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4dGZlc2lwcnZuY3F5ZmJlcmtjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzU2OTA2NSwiZXhwIjoyMDczMTQ1MDY1fQ.Pn2gG0IIuJcKwq7ZXrcmM-jg1fbKnko13y6ZlaXGOD8';
-
 class SupabaseConfig {
     constructor() {
-        this.supabaseUrl = this.getEnvVariable('SUPABASE_URL') || DEFAULT_SUPABASE_URL;
-        this.supabaseKey = this.getEnvVariable('SUPABASE_KEY') || DEFAULT_SUPABASE_ANON_KEY;
-        this.supabaseServiceKey = this.getEnvVariable('SUPABASE_SERVICE_KEY') || DEFAULT_SUPABASE_SERVICE_KEY;
+        this.supabaseUrl = this.getEnvVariable('SUPABASE_URL');
+        this.supabaseKey = this.getEnvVariable('SUPABASE_KEY');
+        this.supabaseServiceKey = this.getEnvVariable('SUPABASE_SERVICE_KEY');
         
         // Initialize Supabase client if credentials are available
         this.client = null;
@@ -858,4 +852,6 @@ window.supabaseConfig = new SupabaseConfig();
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = SupabaseConfig;
 }
+
+
 
